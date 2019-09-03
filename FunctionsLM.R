@@ -46,5 +46,6 @@ calculateBeta <- function(X, Y){
 calculateMSE <- function(beta, beta_LS){
   
   # Return MSE - error ||beta - beta_LS||_2^2
+  MSE <- sum( (beta - beta_LS)^2 )
   return(MSE)
 }
