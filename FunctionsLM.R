@@ -5,7 +5,9 @@
 # seed  - starting seed value
 generateY <- function(X, beta, sigma, seed = 5832652){
   #[ToDo] Set seed and generate Y following linear model
-  
+  nobs <- dim(X)[1] # get the number of observations
+  noise <- rnorm(n = nobs, mean = 0, sd = sigma) # generate the noise term
+  Y <- X %*% beta + noise # generate the observations
   # Return Y
   return(Y)
 }
