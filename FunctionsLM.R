@@ -18,6 +18,26 @@ generateY <- function(X, beta, sigma, seed = 5832652){
 calculateBeta <- function(X, Y){
   # Calculate beta_LS
   
+  # check wether the matrix is singular or not
+  XtX <- crossprod(X, X)
+  XtY <- crossprod(X, Y) 
+  flag_non_singular <- class( try(solve( XtX ), silent=T) )=="matrix" # check wether it is singular matrix
+  
+  if (flag_non_singular){
+    # if it is not a singular matrix
+    beta_LS <- solve( XtX, XtY) # calculate the beta
+    
+  }else{
+    # if it is a singular matrix, use svd decomposition to calculate the generalized inverse matrix
+    svd_decom <- svd( XtX ) # svd decomposition
+    flag_eig_non_zero <- ( svd_decom$d > 1e-2 ) # only use the columns that the eigenvalues are none zero
+    # calculate the inverse matrix using svd
+    inv_matrix <- svd_decom$v[ ,flag_eig_non_zero] %*% diag(1/svd_decom$d[flag_eig_non_zero]) %*%t(svd_decom$u[ ,flag_eig_non_zero])
+    # calculate the beta
+    beta_LS <- inv_matrix %*% XtY # calculate the beta
+    
+  }
+  
   # Return beta
   return(beta_LS)
 }
